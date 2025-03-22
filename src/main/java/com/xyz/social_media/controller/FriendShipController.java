@@ -1,9 +1,14 @@
 package com.xyz.social_media.controller;
 
 import com.xyz.social_media.models.Friends;
+import com.xyz.social_media.repository.FriendRepo;
 import com.xyz.social_media.service.FriendShipService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/friendship")
@@ -14,12 +19,30 @@ public class FriendShipController {
     @Autowired
     public FriendShipController(FriendShipService friendShipService) {
         this.friendShipService = friendShipService;
+
     }
 
-    @PostMapping("/friendrequest/{userId1}/{userId2}")
-    public Friends friendRequest(@PathVariable("userId1") Long userId1, @PathVariable("userId2") Long userId2){
+    @PostMapping("/friendrequest/{userId2}")
+    public Friends friendRequest(@RequestHeader("userId") Long userId1, @PathVariable("userId2") Long userId2){
         Friends friends = friendShipService.friendRequest(userId1,userId2);
 
         return friends;
+    }
+
+    @PatchMapping("/acceptrequest/{friendShipId}")
+    public ResponseEntity<Friends> acceptFriendRequest(@PathVariable("friendShipId") Long friendShipId){
+        Friends friends = friendShipService.acceptFriendRequest(friendShipId);
+        return new ResponseEntity<>(friends,HttpStatus.OK);
+    }
+
+    @PatchMapping("/rejectrequest/{friendShipId}")
+    public ResponseEntity<Friends> rejectFriendRequest(@PathVariable("friendShipId") Long friendShipId){
+        Friends friends = friendShipService.rejectFriendRequest(friendShipId);
+        return new ResponseEntity<>(friends,HttpStatus.OK);
+    }
+
+    @GetMapping("/friends/{userId}")
+    public List<Long> getFriendsByUserId(@PathVariable("userId") Long userId){
+        return friendShipService.getFriendsByUserId(userId);
     }
 }
