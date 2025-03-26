@@ -38,6 +38,12 @@ public class MyFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
+        String requestURI1 = httpRequest.getRequestURI();
+        if (requestURI1.startsWith("/uploads/") || requestURI1.equals("/favicon.ico")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:3000"); // Frontend URL
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST,PATCH, PUT, DELETE, OPTIONS");
         httpResponse.setHeader(
