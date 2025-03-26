@@ -5,10 +5,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface UserRepo extends JpaRepository<User,Long> {
 
     User save(User user);
 
     @Query(value = "select * from user u where u.email = :email",nativeQuery = true)
     User getUserByEmail(@Param("email") String email);
+
+    @Query(value = "select * from user u where u.id = :userId",nativeQuery = true)
+    User getUserByUserId(@Param("userId") Long userId);
+
+    @Query(value = "SELECT u.id FROM User u WHERE u.id <> :userId AND u.id NOT IN " +
+            "(SELECT f.user_id2 FROM Friends f WHERE f.user_id1 = :userId " +
+            " UNION " +
+            "SELECT f.user_id1 FROM Friends f WHERE f.user_id2 = :userId)",nativeQuery = true)
+    List<Long> findSuggestedFriendIds(Long userId);
+
 }
