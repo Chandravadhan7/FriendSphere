@@ -32,10 +32,10 @@ public class FriendShipController {
         return friends;
     }
 
-    @DeleteMapping("cancelrequest/{id}")
-    public ResponseEntity<String> cancelRequest(@PathVariable("id") Long id){
-        friendRepo.cancelRequest(id);
-        return new ResponseEntity<>("request cancelled",HttpStatus.OK);
+    @DeleteMapping("/cancelrequest/{userId2}")
+    public ResponseEntity<String> cancelRequest(@RequestHeader("userId") Long userId1, @PathVariable("userId2") Long userId2){
+        friendRepo.cancelRequest(userId1, userId2);
+        return ResponseEntity.ok("Friend request canceled");
     }
 
 
@@ -59,6 +59,17 @@ public class FriendShipController {
     @GetMapping("/suggestions")
     public List<UserResponseDto> getSuggestions(@RequestHeader Long userId){
         List<UserResponseDto> userResponseDtos = friendShipService.getFriendSuggestion(userId);
+        return userResponseDtos;
+    }
+
+    @GetMapping("/pending-requests")
+    public List<Long> getPendingRequests(@RequestHeader("userId") Long userId) {
+        return friendRepo.findPendingRequests(userId);
+    }
+
+    @GetMapping("/friendrequests")
+    public List<UserResponseDto> getAllFriendRequests(@RequestHeader Long userId){
+        List<UserResponseDto> userResponseDtos = friendShipService.getAllFriendRequests(userId);
         return userResponseDtos;
     }
 }

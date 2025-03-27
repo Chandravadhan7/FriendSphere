@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 public interface FriendRepo extends JpaRepository<Friends,Long> {
@@ -19,7 +20,17 @@ public interface FriendRepo extends JpaRepository<Friends,Long> {
     List<Friends> getFriendsByUserId(@Param("userId") Long userId);
 
     @Modifying
-    @Query(value = "delete from friends f where f.id = :id",nativeQuery = true)
-    void cancelRequest(@Param("id") Long id);
+    @Query(value = "DELETE FROM friends f WHERE f.user_id1 = :userId1 AND f.user_id2 = :userId2 AND f.status = 'pending'", nativeQuery = true)
+    void cancelRequest(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
+
+    @Query(value = "SELECT f.user_id2 FROM Friends f WHERE f.user_id1 = :userId AND f.status = 'pending'", nativeQuery = true)
+    List<Long> findPendingRequests(@Param("userId") Long userId);
+
+    @Query(value = "SELECT f.id FROM friends f WHERE f.user_id2 = :userId AND f.status = :status", nativeQuery = true)
+    List<Long> getFriendRequests(@Param("userId") Long userId, @Param("status") String status);
+
+
+    @Query("SELECT f FROM Friends f WHERE f.id IN :friendShipIds")
+    List<Friends> getFriendShipsByIds(@Param("friendShipIds") List<Long> friendShipIds);
 
 }

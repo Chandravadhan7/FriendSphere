@@ -8,6 +8,17 @@ public class UserResponseDto {
     private String profile_img_url;
     private String cover_pic_url;
 
+    public UserResponseDto(Long id, String name, Long dob, String profileImgUrl, String coverPicUrl) {
+        this.userId = id;
+        this.name = name;
+        this.dob = dob;
+        this.profile_img_url = profileImgUrl;
+        this.cover_pic_url = coverPicUrl;
+    }
+    public UserResponseDto(){
+
+    }
+
     public Long getUserId() {
         return userId;
     }

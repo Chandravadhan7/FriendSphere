@@ -67,5 +67,25 @@ public class FriendShipService {
         return userResponseDtos;
     }
 
+    public List<UserResponseDto> getAllFriendRequests(Long userId){
+        // Step 1: Fetch all pending friend request IDs
+        List<Long> friendShipIds = friendRepo.getFriendRequests(userId, "pending");
+
+        // Step 2: Fetch all Friends objects in one query
+        List<Friends> friendsList = friendRepo.getFriendShipsByIds(friendShipIds);
+
+        // Step 3: Convert to DTO and return
+        return friendsList.stream().map(f -> {
+            User user = userRepo.getUserByUserId(f.getUser_id1()); // Fetch sender details
+            return new UserResponseDto(
+                    user.getId(),
+                    user.getName(),
+                    user.getDob(),
+                    user.getProfile_img_url(),
+                    user.getCover_pic_url()
+            );
+        }).collect(Collectors.toList());
+    }
+
 
 }
