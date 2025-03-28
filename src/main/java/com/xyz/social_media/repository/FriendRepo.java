@@ -13,8 +13,8 @@ public interface FriendRepo extends JpaRepository<Friends,Long> {
 
     Friends save(Friends friends);
 
-    @Query(value = "select * from friends f where f.id = :id",nativeQuery = true)
-    Friends getFriendShipById(Long id);
+    @Query(value = "select * from friends f where f.user_id1 = :userId1 and f.user_id2 = :userId2",nativeQuery = true)
+    Friends getFriendShipByUserIds(@Param("userId1") Long userId1,@Param("userId2") Long userId2);
 
     @Query(value = "select * from friends f where (f.user_id1= :userId or f.user_id2 = :userId) and f.status= 'accept'",nativeQuery = true)
     List<Friends> getFriendsByUserId(@Param("userId") Long userId);

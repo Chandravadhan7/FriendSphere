@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("post")
+@RequestMapping("/post")
 public class PostController {
 
     private PostService postService;
@@ -35,13 +35,13 @@ public class PostController {
         return postService.createPost(postRequestDto, file);
     }
 
-    @GetMapping("/user/posts")
-    public List<Post> getPostsOfUser(@RequestHeader Long userId){
-        List<Post> posts = postService.getAllPostsOfUser(userId);
+    @GetMapping("/posts/{user_id}")
+    public List<Post> getPostsOfUser(@PathVariable("user_id") Long user_id){
+        List<Post> posts = postService.getAllPostsOfUser(user_id);
         return posts;
     }
 
-    @GetMapping("feed")
+    @GetMapping("/feed")
     public List<Post> getPostsOfFriendsOfUser(@RequestHeader Long userId){
         List<Post> posts = postService.getAllPostsOfFriendsOfUser(userId);
         return posts;

@@ -76,7 +76,7 @@ public class PostService {
     }
 
     public List<Post> getAllPostsOfFriendsOfUser(Long userId){
-        List<Long> friendsIds = friendShipService.getFriendsByUserId(userId);
+        List<Long> friendsIds = friendShipService.getFriendsUserIdsByUserId(userId);
         List<Post> feed = new ArrayList<>();
         for(Long x : friendsIds){
             feed.addAll(getAllPostsOfUser(x));

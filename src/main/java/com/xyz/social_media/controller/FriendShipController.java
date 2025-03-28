@@ -39,20 +39,20 @@ public class FriendShipController {
     }
 
 
-    @PatchMapping("/acceptrequest/{friendShipId}")
-    public ResponseEntity<Friends> acceptFriendRequest(@PathVariable("friendShipId") Long friendShipId){
-        Friends friends = friendShipService.acceptFriendRequest(friendShipId);
+    @PatchMapping("/acceptrequest/{userId1}")
+    public ResponseEntity<Friends> acceptFriendRequest(@PathVariable("userId1") Long userId1,@RequestHeader("userId") Long userId2){
+        Friends friends = friendShipService.acceptFriendRequest(userId1,userId2);
         return new ResponseEntity<>(friends,HttpStatus.OK);
     }
 
-    @PatchMapping("/rejectrequest/{friendShipId}")
-    public ResponseEntity<Friends> rejectFriendRequest(@PathVariable("friendShipId") Long friendShipId){
-        Friends friends = friendShipService.rejectFriendRequest(friendShipId);
+    @PatchMapping("/rejectrequest/{userId1}")
+    public ResponseEntity<Friends> rejectFriendRequest(@PathVariable("userId1") Long userId1,@RequestHeader("userId") Long userId2){
+        Friends friends = friendShipService.rejectFriendRequest(userId1,userId2);
         return new ResponseEntity<>(friends,HttpStatus.OK);
     }
 
     @GetMapping("/friends/{userId}")
-    public List<Long> getFriendsByUserId(@PathVariable("userId") Long userId){
+    public List<UserResponseDto> getFriendsByUserId(@PathVariable("userId") Long userId){
         return friendShipService.getFriendsByUserId(userId);
     }
 

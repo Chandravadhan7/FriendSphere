@@ -32,22 +32,40 @@ public class FriendShipService {
         return friends1;
     }
 
-    public Friends acceptFriendRequest(Long friendShipId){
-        Friends friends = friendRepo.getFriendShipById(friendShipId);
+    public Friends acceptFriendRequest(Long userId1,Long userId2){
+        Friends friends = friendRepo.getFriendShipByUserIds(userId1,userId2);
         friends.setStatus("accept");
         Friends friends1 = friendRepo.save(friends);
         return friends1;
     }
-    public Friends rejectFriendRequest(Long friendShipId){
-        Friends friends = friendRepo.getFriendShipById(friendShipId);
+    public Friends rejectFriendRequest(Long userId1,Long userId2){
+        Friends friends = friendRepo.getFriendShipByUserIds(userId1,userId2);
         friends.setStatus("reject");
         Friends friends1 = friendRepo.save(friends);
         return friends1;
     }
 
-    public List<Long> getFriendsByUserId(Long userId){
+    public List<Long> getFriendsUserIdsByUserId(Long userId){
         List<Friends> friends = friendRepo.getFriendsByUserId(userId);
         return friends.stream().map(friends1 -> friends1.getUser_id1().equals(userId)?friends1.getUser_id2():friends1.getUser_id1()).collect(Collectors.toList());
+    }
+    public List<UserResponseDto> getFriendsByUserId(Long userId){
+        List<Long> friendsIds = getFriendsUserIdsByUserId(userId);
+        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+
+        for(Long x : friendsIds){
+            User user = userRepo.getUserByUserId(x);
+            UserResponseDto userResponseDto = new UserResponseDto();
+            userResponseDto.setName(user.getName());
+            userResponseDto.setUserId(user.getId());
+            userResponseDto.setDob(user.getDob());
+            userResponseDto.setProfile_img_url(user.getProfile_img_url());
+            userResponseDto.setCover_pic_url(user.getCover_pic_url());
+
+            userResponseDtos.add(userResponseDto);
+        }
+
+        return userResponseDtos;
     }
 
     public List<UserResponseDto> getFriendSuggestion(Long userId){
