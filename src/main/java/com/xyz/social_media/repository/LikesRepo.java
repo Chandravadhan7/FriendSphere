@@ -20,4 +20,8 @@ public interface LikesRepo extends JpaRepository<Likes,Long> {
 
     @Query(value = "select * from likes l where l.post_id= :postId",nativeQuery = true)
     List<Likes> getLikeByPostId(@Param("postId") Long postId);
+
+    @Query(value = "select * from likes l where l.user_id= :userId",nativeQuery = true)
+    List<Likes> findByUserId(@Param("userId") Long userId);
+
 }
