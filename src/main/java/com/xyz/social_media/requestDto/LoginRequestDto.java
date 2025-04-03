@@ -2,15 +2,15 @@ package com.xyz.social_media.requestDto;
 
 public class LoginRequestDto {
 
-    private String Email;
+    private String email;
     private String password;
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getPassword() {
