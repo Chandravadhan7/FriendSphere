@@ -54,4 +54,8 @@ public class LikesService {
         }
         return userResponseDtoList;
     }
+
+    public List<Likes> getLikesByUserId(Long userId) {
+        return likesRepo.findByUserId(userId); // Assuming you have a method to get likes by userId
+    }
 }

@@ -1,6 +1,7 @@
 package com.xyz.social_media.controller;
 
 import com.xyz.social_media.models.Likes;
+import com.xyz.social_media.repository.LikesRepo;
 import com.xyz.social_media.response.UserResponseDto;
 import com.xyz.social_media.service.LikesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,12 @@ import java.util.List;
 @RequestMapping("/likes")
 public class LikesController {
     private LikesService likesService;
+    private LikesRepo likesRepo;
 
     @Autowired
-    public LikesController(LikesService likesService) {
+    public LikesController(LikesService likesService, LikesRepo likesRepo) {
         this.likesService = likesService;
+        this.likesRepo = likesRepo;
     }
 
     @PostMapping("/post")
@@ -35,5 +38,15 @@ public class LikesController {
     @GetMapping("")
     public List<UserResponseDto> getLikesOfPost(@RequestParam("postId") Long postId){
         return likesService.getLikesByPostId(postId);
+    }
+
+    @GetMapping("/userLikes")
+    public ResponseEntity<List<Likes>> getUserLikes(@RequestHeader("userId") Long userId) {
+        List<Likes> userLikes = likesService.getLikesByUserId(userId);
+        if (userLikes != null && !userLikes.isEmpty()) {
+            return ResponseEntity.ok(userLikes);
+        } else {
+            return ResponseEntity.noContent().build();  // If no likes found
+        }
     }
 }
