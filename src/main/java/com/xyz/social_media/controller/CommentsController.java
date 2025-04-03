@@ -22,9 +22,9 @@ public class CommentsController {
     }
 
     @PostMapping("/postcomment")
-    public ResponseEntity<String> postComment(@RequestHeader("userId") Long userId, @RequestParam("postId") Long postId, @RequestBody CommentRequestDto commentRequestDto, @RequestParam(value = "parentId",required = false) Long parentId ){
+    public ResponseEntity<Comments> postComment(@RequestHeader("userId") Long userId, @RequestParam("postId") Long postId, @RequestBody CommentRequestDto commentRequestDto, @RequestParam(value = "parentId",required = false) Long parentId ){
         Comments comments = commentsService.postComment(postId,userId,commentRequestDto.getContent(),parentId);
-        return new ResponseEntity<>("you commented on this post", HttpStatus.OK);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
     @GetMapping("")
