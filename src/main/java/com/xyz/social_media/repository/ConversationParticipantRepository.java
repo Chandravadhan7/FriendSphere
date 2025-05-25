@@ -13,4 +13,7 @@ public interface ConversationParticipantRepository extends JpaRepository<Convers
 
     @Query(value = "select * from conversation_participants where conversation_id= :conversationId",nativeQuery = true)
     List<ConversationParticipants> getParticipantsByConversationId(@Param("conversationId") Long conversationId);
+
+    @Query(value = "select * from conversation_participants cp  where cp.conversation_id= :conversationId and cp.user_id = :userId",nativeQuery = true)
+    ConversationParticipants findByConversationIdAndUserId(@Param("conversationId") Long conversationId,@Param("userId") Long userId);
 }
