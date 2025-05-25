@@ -28,4 +28,10 @@ public class ConversationParticipantController {
     public List<ConversationParticipants> getParticipantsOfConversation(@PathVariable("conversationId") Long conversationId){
         return conversationParticipantsService.getParticipantsOfConversation(conversationId);
     }
+
+    @PatchMapping("/last-seen/{conversationId}/{otherUserId}")
+    public ResponseEntity<ConversationParticipants> setLastSeen(@PathVariable Long conversationId,@PathVariable Long otherUserId){
+        ConversationParticipants conversationParticipants = conversationParticipantsService.setLastSeen(conversationId,otherUserId);
+        return new ResponseEntity<>(conversationParticipants,HttpStatus.OK);
+    }
 }
