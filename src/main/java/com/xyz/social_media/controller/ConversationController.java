@@ -25,6 +25,11 @@ public class ConversationController {
         return new ResponseEntity<>(conversationService.createConversation(conversation), HttpStatus.OK);
     }
 
+    @PostMapping("/group")
+    public ResponseEntity<Conversation> createGroup(@RequestBody Conversation conversation){
+        conversation.setIsGroup(true);
+        return new ResponseEntity<>(conversationService.createConversation(conversation), HttpStatus.CREATED);
+    }
     @GetMapping()
     public List<Conversation> getAllConversationsOfUser(@RequestHeader("userId") Long userId){
         return conversationService.getAllConversationsOfUser(userId);
@@ -45,5 +50,4 @@ public class ConversationController {
         conversationService.deleteConversation(conversationId);
         return new ResponseEntity<>("chat deleted successfully",HttpStatus.OK);
     }
-
 }
