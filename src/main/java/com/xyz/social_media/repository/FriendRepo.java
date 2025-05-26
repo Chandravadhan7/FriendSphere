@@ -20,6 +20,7 @@ public interface FriendRepo extends JpaRepository<Friends,Long> {
     List<Friends> getFriendsByUserId(@Param("userId") Long userId);
 
     @Modifying
+    @Transactional
     @Query(value = "DELETE FROM friends f WHERE f.user_id1 = :userId1 AND f.user_id2 = :userId2 AND f.status = 'pending'", nativeQuery = true)
     void cancelRequest(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
 
