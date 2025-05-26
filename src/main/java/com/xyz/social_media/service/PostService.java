@@ -84,4 +84,8 @@ public class PostService {
 
         return feed;
     }
+
+    public void deletePost(Long postId){
+        postRepo.deletePostById(postId);
+    }
 }
