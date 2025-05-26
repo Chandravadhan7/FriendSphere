@@ -19,4 +19,23 @@ public interface MessageRepo extends JpaRepository<Messages,Long> {
     @Modifying
     @Query(value = "delete from messages m where m.message_id= :messageId",nativeQuery = true)
     void deleteMessageById(Long messageId);
+
+    @Query(value = "SELECT * FROM messages m " +
+            "WHERE m.conversation_id = :conversationId " +
+            "AND m.sender_id != :userId " +
+            "AND m.created_at > :lastSeenAt " +
+            "AND is_deleted = false " +
+            "ORDER BY m.created_at DESC ",
+            nativeQuery = true)
+    List<Messages> findLatestUnseenMessage(
+            @Param("conversationId") Long conversationId,
+            @Param("userId") Long userId,
+            @Param("lastSeenAt") Long lastSeenAt
+    );
+
+    @Query(value = "SELECT * FROM messages m WHERE m.conversation_id = :conversationId ORDER BY m.created_at DESC LIMIT 1", nativeQuery = true)
+    Messages findLastMessageByConversationId(@Param("conversationId") Long conversationId);
+
+
+
 }

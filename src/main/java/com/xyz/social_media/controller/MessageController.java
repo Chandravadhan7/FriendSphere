@@ -33,4 +33,18 @@ public class MessageController {
         messageService.deleteMessage(messageId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/latest-unseen-message/{conversationId}")
+    public ResponseEntity<List<Messages>> getLatestUnseenMessage(@PathVariable Long conversationId, @RequestHeader Long userId) {
+        List<Messages> latestMessages = messageService.getLatestUnseenMessage(conversationId, userId);
+
+        return new ResponseEntity<>(latestMessages, HttpStatus.OK);
+    }
+
+    @GetMapping("/latest-message/{conversationId}")
+    public ResponseEntity<Messages> getLatestMessages(@PathVariable Long conversationId){
+        Messages latest = messageService.getLatestMessages(conversationId);
+        return new ResponseEntity<>(latest,HttpStatus.OK);
+    }
+
 }
