@@ -11,13 +11,22 @@ import com.xyz.social_media.utilities.UniqueHelper;
 import com.xyz.social_media.utilities.UtilityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService {
     private UserRepo userRepo;
     private SessionRepo sessionRepo;
+    private static final String UPLOAD_DIR = "C:/uploads/";
 
     @Autowired
     public UserService(UserRepo userRepo, SessionRepo sessionRepo){
@@ -53,5 +62,80 @@ public class UserService {
             return new LoginResponseDto(ses.getSessionId(), ses.getExpiresAt(), user.getId());
         } else throw new Exception("Invalid credits");
     }
+
+
+
+    public String updateProfilePicture(Long userId, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new RuntimeException("Profile picture file is empty.");
+        }
+
+        String fileName = storeFile(file);
+
+        User user = userRepo.getUserByUserId(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found with ID: " + userId);
+        }
+
+        String imageUrl = "http://localhost:8080/uploads/" + fileName;
+        user.setProfile_img_url(imageUrl);
+        userRepo.save(user);
+
+        return imageUrl;
+    }
+
+
+    public String updateCoverPicture(Long userId, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new RuntimeException("Cover picture file is empty.");
+        }
+
+        String fileName = storeFile(file);
+
+        User user = userRepo.getUserByUserId(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found with ID: " + userId);
+        }
+
+        String imageUrl = "http://localhost:8080/uploads/" + fileName;
+        user.setCover_pic_url(imageUrl);
+        userRepo.save(user);
+
+        return imageUrl;
+    }
+
+
+    private String storeFile(MultipartFile file) {
+        try {
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                throw new RuntimeException("Only image files are allowed.");
+            }
+
+            String originalFileName = file.getOriginalFilename();
+            if (originalFileName == null) {
+                throw new RuntimeException("File name is invalid.");
+            }
+
+            // ✅ Sanitize the file name
+            String cleanFileName = originalFileName.replaceAll("[^a-zA-Z0-9\\.\\-_]", "_");
+            String fileName = System.currentTimeMillis() + "_" + cleanFileName;
+
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            try (InputStream inputStream = file.getInputStream()) {
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            return fileName;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store file: " + e.getMessage());
+        }
+    }
+
 
 }
