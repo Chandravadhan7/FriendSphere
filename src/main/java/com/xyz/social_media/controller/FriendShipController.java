@@ -72,4 +72,10 @@ public class FriendShipController {
         List<UserResponseDto> userResponseDtos = friendShipService.getAllFriendRequests(userId);
         return userResponseDtos;
     }
+
+    @GetMapping("mutual-friends/{userId}")
+    public List<UserResponseDto> getMutualFriends(@RequestHeader("userId") Long userId1,@PathVariable Long userId){
+        List<UserResponseDto> userResponseDtos = friendShipService.getMutualFriends(userId1,userId);
+        return userResponseDtos;
+    }
 }

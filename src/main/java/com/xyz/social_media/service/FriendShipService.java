@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,5 +107,40 @@ public class FriendShipService {
         }).collect(Collectors.toList());
     }
 
+    public List<UserResponseDto> getMutualFriends(Long userId1,Long userId2){
+        List<Friends> friendsList1 = friendRepo.getFriendsByUserId(userId1);
+        List<Friends> friendsList2 = friendRepo.getFriendsByUserId(userId2);
 
+        Set<Long> user1Friends = extractFriendIds(friendsList1, userId1);
+        Set<Long> user2Friends = extractFriendIds(friendsList2, userId2);
+
+        user1Friends.retainAll(user2Friends); // Mutual friend IDs
+
+        List<User> mutualUsers = userRepo.findAllById(user1Friends);
+
+        return mutualUsers.stream()
+                .map(this::mapToUserResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    private Set<Long> extractFriendIds(List<Friends> list, Long currentUserId) {
+        Set<Long> ids = new HashSet<>();
+        for (Friends f : list) {
+            if (f.getUser_id1().equals(currentUserId)) {
+                ids.add(f.getUser_id2());
+            } else {
+                ids.add(f.getUser_id1());
+            }
+        }
+        return ids;
+    }
+    private UserResponseDto mapToUserResponseDto(User user) {
+        return new UserResponseDto(
+                user.getId(),
+                user.getName(),
+                user.getDob(),
+                user.getProfile_img_url(),
+                user.getCover_pic_url()
+        );
+    }
 }
