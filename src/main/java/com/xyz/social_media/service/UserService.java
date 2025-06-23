@@ -137,5 +137,13 @@ public class UserService {
         }
     }
 
-
+    public Session getValidSession(String sessionId) throws Exception {
+        Long currentTime = System.currentTimeMillis();
+        Session session =
+                sessionRepo.findBySessionIdAndStatusAndExpiresAtGreaterThan(sessionId, currentTime);
+        if (session == null) {
+            throw new Exception("Invalid or expired session");
+        }
+        return session;
+    }
 }
