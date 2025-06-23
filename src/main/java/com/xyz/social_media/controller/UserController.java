@@ -1,5 +1,6 @@
 package com.xyz.social_media.controller;
 
+import com.xyz.social_media.models.Session;
 import com.xyz.social_media.models.User;
 import com.xyz.social_media.repository.UserRepo;
 import com.xyz.social_media.requestDto.LoginRequestDto;
@@ -51,6 +52,15 @@ public class UserController {
         userResponseDto.setName(user.getName());
         userResponseDto.setProfile_img_url(user.getProfile_img_url());
         return userResponseDto;
+    }
+    @PostMapping("/api/validate")
+    public ResponseEntity<?> validate(@RequestHeader("sessionId") String sessionId) {
+        try {
+            Session session = userService.getValidSession(sessionId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired session");
+        }
     }
 
     @PatchMapping("/update-profile-pic")
