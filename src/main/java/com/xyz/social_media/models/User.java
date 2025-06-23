@@ -3,7 +3,7 @@ package com.xyz.social_media.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "`user`")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
