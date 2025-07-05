@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class UserService {
     private UserRepo userRepo;
     private SessionRepo sessionRepo;
-    private static final String UPLOAD_DIR = "C:/uploads/";
+    private static final String UPLOAD_DIR = "/home/ec2-user/uploads/";
 
     @Autowired
     public UserService(UserRepo userRepo, SessionRepo sessionRepo){
@@ -41,7 +41,7 @@ public class UserService {
         user.setPassword(signupRequestDto.getPassword());
         user.setDob(null);
         user.setCover_pic_url(null);
-        user.setProfile_img_url(null);
+        user.setProfile_img_url("https://i.ibb.co/67HWYXmq/icons8-user-96.png");
 
         User user1 = userRepo.save(user);
         return user1;
@@ -77,7 +77,7 @@ public class UserService {
             throw new RuntimeException("User not found with ID: " + userId);
         }
 
-        String imageUrl = "http://localhost:8080/uploads/" + fileName;
+        String imageUrl = "http://ec2-13-203-205-26.ap-south-1.compute.amazonaws.com:8080/uploads/" + fileName;
         user.setProfile_img_url(imageUrl);
         userRepo.save(user);
 
@@ -97,7 +97,7 @@ public class UserService {
             throw new RuntimeException("User not found with ID: " + userId);
         }
 
-        String imageUrl = "http://localhost:8080/uploads/" + fileName;
+        String imageUrl = "http://ec2-13-203-205-26.ap-south-1.compute.amazonaws.com:8080/uploads/" + fileName;
         user.setCover_pic_url(imageUrl);
         userRepo.save(user);
 
@@ -145,5 +145,12 @@ public class UserService {
             throw new Exception("Invalid or expired session");
         }
         return session;
+    }
+
+    public void logout(String sessionId) {
+        Session session = sessionRepo.findByValueAndStatus(sessionId, "active");
+        session.setStatus("logged out");
+        sessionRepo.save(session);
+        return;
     }
 }
