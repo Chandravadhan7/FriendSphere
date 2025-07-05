@@ -44,7 +44,8 @@ public class MyFilter implements Filter {
             return;
         }
 
-        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:3000"); // Frontend URL
+        httpResponse.setHeader("Access-Control-Allow-Origin", "http://social-media0282.s3-website.ap-south-1.amazonaws.com"); // Frontend URL
+//        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST,PATCH, PUT, DELETE, OPTIONS");
         httpResponse.setHeader(
                 "Access-Control-Allow-Headers", "Content-Type, Authorization, userId, sessionId");
