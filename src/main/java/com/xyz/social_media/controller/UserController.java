@@ -53,6 +53,11 @@ public class UserController {
         userResponseDto.setProfile_img_url(user.getProfile_img_url());
         return userResponseDto;
     }
+    @PostMapping("/api/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("sessionId") String sessionId) {
+        userService.logout(sessionId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
     @PostMapping("/api/validate")
     public ResponseEntity<?> validate(@RequestHeader("sessionId") String sessionId) {
         try {
